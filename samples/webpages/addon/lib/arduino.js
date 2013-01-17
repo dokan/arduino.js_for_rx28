@@ -79,26 +79,47 @@ var closeArduino = dylib.declare("closeArduino",
                           ctypes.int32_t
                           );
 
+/* added by dokan for rx-28 */
+//直接通信
+var commandWrite = dylib.declare("commandWrite",
+				 ctypes.default_abi,
+				 ctypes.int32_t,
+				 ctypes.int32_t,
+				 ctypes.int32_t,
+				 new ctypes.PointerType(ctypes.char.ptr)
+				);
+
+//arduinoに同じ値を渡すだけ。
+var commandArduino = dylib.declare("commandArduino",
+				 ctypes.default_abi,
+				 ctypes.int32_t,
+				 ctypes.int32_t,
+				 ctypes.int32_t,
+				 new ctypes.PointerType(ctypes.char.ptr)
+				);
+
+
+
 exports.open = function(portname) {
     var err = ctypes.char.ptr();
     if ( -1 == openArduino(portname, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.pinMode = function(pin, isOutputMode) {
     var err = ctypes.char.ptr();
     if ( -1 == pinMode(pin, isOutputMode, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.digitalWrite = function(pin, value) {
     var err = ctypes.char.ptr();
     if ( -1 == digitalWrite(pin, value, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.digitalRead = function(pin) {
     var value = ctypes.int32_t(-1);
@@ -107,14 +128,14 @@ exports.digitalRead = function(pin) {
         throw err.readString(); 
     }
     return value.address().contents;
-}
+};
 
 exports.analogWrite = function(pin, value) {
     var err = ctypes.char.ptr();
     if ( -1 == analogWrite(pin, value, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.analogRead = function(pin) {
     var value = ctypes.int32_t(-1);
@@ -123,26 +144,43 @@ exports.analogRead = function(pin) {
         throw err.readString(); 
     }
     return value.address().contents;
-}
+};
 
 exports.pulse = function(pin, ontime, offtime) {
     var err = ctypes.char.ptr();
     if ( -1 == pulse(pin, ontime, offtime, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.delayMicroseconds = function(value) {
     var err = ctypes.char.ptr();
     if ( -1 == delayMicroseconds(value, err.address()) ) {
         throw err.readString(); 
     }
-}
+};
 
 exports.close = function() {
     closeArduino();
     //dylib.close();
-}
+};
+
+/* add by dokan for rx-28*/
+//直接通信
+exports.commandWrite = function(valueA, valueB) {
+    var err = ctypes.char.ptr();
+    if ( -1 == commandWrite(valueA, valueB, err.address()) ) {
+        throw err.readString(); 
+    }
+};
+
+//arduinoに同じ値を渡すだけ。
+exports.commandArduino = function(valueA, valueB) {
+    var err = ctypes.char.ptr();
+    if ( -1 == commandArduino(valueA, valueB, err.address()) ) {
+        throw err.readString(); 
+    }
+};
 
 //from Firefox 17 __exposedProps__
 exports.__exposedProps__ = {
@@ -154,6 +192,8 @@ exports.__exposedProps__ = {
     analogRead: "r",
     pulse: "r",
     delayMicroseconds: "r",
-    close: "r"
-}
+    close: "r",
+    commandWrite: "r",
+    commandArduino: "r"
+};
 

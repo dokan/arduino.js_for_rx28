@@ -20,9 +20,18 @@ int pinMode(int pin, bool isOutput, char** error);
 
 int delayMicroseconds(int value, char** error);
 
-int closeArduino();
+int closeArduino(void);
+
+/* add by dokan for rx-28 */
+int commandWrite(int valueA, int valueB, char** error);
+int commandArduino(int valueA, int valueB, char** error);
+void move_both(int angleA, int angleB);
+void move(int mID, int angle);
+void msleep(int msec);
+void rx28_write(unsigned char* p);
+unsigned char checksum(unsigned char* p);
 
 void response(char* buffer);
-int invoke(char* command, char* response, char** error);
+int invoke(char* command, char* response, char** error, long length);
 
 #endif
